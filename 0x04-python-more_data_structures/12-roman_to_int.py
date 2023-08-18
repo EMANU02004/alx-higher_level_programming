@@ -1,39 +1,34 @@
 #!/usr/bin/python3
-def to_subtract(list_num):
-    to_sub = 0
-    max_list = max(list_num)
+def roman_value(prmCharacter):
+    roman_list = [('I', 1), ('V', 5), ('X', 10),
+                  ('L', 50), ('C', 100), ('D', 500), ('M', 1000)]
+    for item in roman_list:
+        character, value = item
+        if (prmCharacter is character):
+            return value
+    return None
 
-    for n in list_num:
-        if max_list > n:
-            to_sub += n
 
-    return (max_list - to_sub)
+def next_value(prmString, prmIndex):
+    if prmIndex + 1 < len(prmString):
+        return roman_value(prmString[prmIndex + 1])
+    else:
+        return None
+
 
 def roman_to_int(roman_string):
-    if not roman_string:
-        return 0
+    result = 0
 
-    if not isinstance(roman_string, str):
-        return 0
+    if (roman_string is None or isinstance(roman_string, str) is False):
+        return result
 
-    rom_n = {'I': 1, 'V': 5, 'X': 10, 'L': 50, 'C': 100, 'D': 500, 'M': 1000}
-    list_keys = list(rom_n.keys())
-
-    num = 0
-    last_rom = 0
-    list_num = [0]
-
-    for ch in roman_string:
-        for r_num in list_keys:
-            if r_num == ch:
-                if rom_n.get(ch) <= last_rom:
-                    num += to_subtract(list_num)
-                    list_num = [rom_n.get(ch)]
-                else:
-                    list_num.append(rom_n.get(ch))
-
-                last_rom = rom_n.get(ch)
-
-    num += to_subtract(list_num)
-
-    return (num)
+    enum = enumerate(roman_string)
+    for index, character in enum:
+        currentValue = roman_value(character)
+        nextValue = next_value(roman_string, index)
+        if nextValue is None or currentValue >= nextValue:
+            result += currentValue
+        else:
+            result += (nextValue - currentValue)
+            next(enum)
+    return result
